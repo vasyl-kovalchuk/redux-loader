@@ -1,9 +1,8 @@
 import * as React from "react";
-import {connect, Dispatch} from "react-redux";
+import {ActionCreator, connect, Dispatch} from "react-redux";
 import {Status} from "./constants";
-import {StateStore} from "./types";
-import {Action} from "react-dedux";
 import {completeLoadingAction, startLoadingAction} from "./actions";
+import {ILoaderAction, StateStore} from "./types";
 
 interface LoadingFunc {
     // args - all rest props except of loader props
@@ -21,10 +20,10 @@ const mapStateToProps = ({loader}:StateStore, ownProps) => ({
     ...loader, ...ownProps
 });
 
-const mapDispatchToPropsWrapper = (loadFn:LoadingFunc)=>(dispatch: Dispatch<Action>, ownProps:object)=>({
+const mapDispatchToPropsWrapper = (loadFn:LoadingFunc)=>(dispatch: Dispatch<ActionCreator<ILoaderAction>>, ownProps:object)=>({
     loading() {
         dispatch(startLoadingAction());
-        loadFn(ownProps).then((result) => {
+        return loadFn(ownProps).then((result) => {
             dispatch(completeLoadingAction({
                 status: Status.SUCCESS
             }));
@@ -39,7 +38,7 @@ const mapDispatchToPropsWrapper = (loadFn:LoadingFunc)=>(dispatch: Dispatch<Acti
     }
 });
 
-const ownLoaderPropsMap = {"label": true, "status":true, "statusMessage":true, "loading":true};
+const ownLoaderPropsMap = {"label": true, "status": true, "statusMessage": true, "loading": true};
 const omitLoaderProps = (props)=>{
     return Object.keys(props).reduce((memo, propName)=>{
         if(!ownLoaderPropsMap[propName]) {
@@ -79,7 +78,10 @@ export const loader = (loadFn:LoadingFunc) => Component => {
 
     }
 
-    return connect(mapStateToProps, mapDispatchToPropsWrapper(loadFn))(Loader)
+    return connect(
+        mapStateToProps,
+        mapDispatchToPropsWrapper(loadFn)
+    )(Loader)
 
 };
 
