@@ -3611,7 +3611,7 @@ const mapStateToProps = ({ loader }, ownProps) => (Object.assign({}, loader, own
 const mapDispatchToPropsWrapper = (loadFn) => (dispatch, ownProps) => ({
     loading() {
         dispatch(actions_1.startLoadingAction());
-        return loadFn(ownProps).then((result) => {
+        return loadFn(ownProps, dispatch).then((result) => {
             dispatch(actions_1.completeLoadingAction({
                 status: constants_1.Status.SUCCESS
             }));

@@ -6,14 +6,14 @@ import {ILoaderAction, StateStore} from "./types";
 
 interface LoadingFunc {
     // args - all rest props except of loader props
-    (...args: any[]):Promise<any>,
+    (ownProps:object, dispatch):Promise<any>,
 }
 
 interface Props {
     label?:string;
     status?:Status;
     statusMessage?:string;
-    loading:LoadingFunc;
+    loading():Promise<any>;
 }
 
 const mapStateToProps = ({loader}:StateStore, ownProps) => ({
@@ -23,7 +23,7 @@ const mapStateToProps = ({loader}:StateStore, ownProps) => ({
 const mapDispatchToPropsWrapper = (loadFn:LoadingFunc)=>(dispatch: Dispatch<ActionCreator<ILoaderAction>>, ownProps:object)=>({
     loading() {
         dispatch(startLoadingAction());
-        return loadFn(ownProps).then((result) => {
+        return loadFn(ownProps, dispatch).then((result) => {
             dispatch(completeLoadingAction({
                 status: Status.SUCCESS
             }));
