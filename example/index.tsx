@@ -14,7 +14,7 @@ const store = createStore<UserStoreState>(userProfile);
 
 ReactDOM.render(
     <Provider store={store}>
-        <UserProfile userName{"vasyl-kovalchuk"}/>
+        <UserProfile userName="vasyl-kovalchuk"/>
     </Provider>,
     document.getElementById('root') as HTMLElement
 );
