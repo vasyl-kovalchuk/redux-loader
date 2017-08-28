@@ -1,31 +1,45 @@
 import * as React from "react";
-import {connect, MapStateToProps} from "react-redux";
-import {load as loadAction} from "./actions";
+import {connect, Dispatch} from "react-redux";
 import {Status} from "./constants";
+import {StateStore} from "./types";
+import {Action} from "react-dedux";
+import {completeLoadingAction, startLoadingAction} from "./actions";
 
-interface StartLoadingFunc {
+interface LoadingFunc {
     // args - all rest props except of loader props
     (...args: any[]):Promise<any>,
 }
 
 interface Props {
-    label:string;
-    status:string;
-    statusMessage:string;
-    startLoading:StartLoadingFunc;
+    label?:string;
+    status?:Status;
+    statusMessage?:string;
+    loading:LoadingFunc;
 }
 
-const mapStateToProps:MapStateToProps = ({loader, ownProps}) => ({
+const mapStateToProps = ({loader}:StateStore, ownProps) => ({
     ...loader, ...ownProps
 });
 
-const mapDispatchToPropsWrapper = (loadFn)=>(dispatch, ownProps:object):MapStateToProps=>({
-    startLoading() {
-        dispatch(loadAction(loadFn(ownProps)))
+const mapDispatchToPropsWrapper = (loadFn:LoadingFunc)=>(dispatch: Dispatch<Action>, ownProps:object)=>({
+    loading() {
+        dispatch(startLoadingAction());
+        loadFn(ownProps).then((result) => {
+            dispatch(completeLoadingAction({
+                status: Status.SUCCESS
+            }));
+            // propagate result to make a chain of promises
+            return result;
+        }, (e) => {
+            dispatch(completeLoadingAction({
+                status: Status.ERROR,
+                statusMessage: e.message
+            }))
+        })
     }
 });
 
-const ownLoaderPropsMap = {"label": true, "status":true, "statusMessage":true, "startLoading":true};
+const ownLoaderPropsMap = {"label": true, "status":true, "statusMessage":true, "loading":true};
 const omitLoaderProps = (props)=>{
     return Object.keys(props).reduce((memo, propName)=>{
         if(!ownLoaderPropsMap[propName]) {
@@ -35,13 +49,13 @@ const omitLoaderProps = (props)=>{
     }, {})
 };
 
-export const loader = (loadFn:StartLoadingFunc) => Component => {
+export const loader = (loadFn:LoadingFunc) => Component => {
 
     class Loader extends React.Component<Props, any> {
 
         componentWillMount() {
-            const {startLoading} = this.props;
-            startLoading(omitLoaderProps(this.props));
+            const {loading} = this.props;
+            loading(omitLoaderProps(this.props));
         }
 
         render() {

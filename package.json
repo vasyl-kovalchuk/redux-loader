@@ -3,21 +3,24 @@
   "version": "0.1.0",
   "description": "Helper HOC function to make preview on data loading",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "cross-env NODE_ENV=production webpack --config webpack.config.js --progress"
   },
   "author": "Vasyl Kovalchuk",
   "license": "ISC",
   "main": "build/redux-loader.js",
   "dependencies": {
+    "react": "^15.6.1",
+    "react-dedux": "^0.4.0-beta.4",
+    "react-dom": "^15.6.1"
+  },
+  "devDependencies": {
     "@types/react": "^16.0.5",
     "@types/react-dom": "^15.5.4",
     "@types/react-redux": "^5.0.5",
-    "react": "^15.6.1",
-    "react-dedux": "^0.4.0-beta.4",
-    "react-dom": "^15.6.1",
-    "webpack": "^3.5.5"
-  },
-  "devDependencies": {
-    "ts-loader": "^2.3.4"
+    "cross-env": "^5.0.5",
+    "ts-loader": "^2.3.4",
+    "webpack": "^3.5.5",
+    "typescript": "^2.4.2"
   }
 }

@@ -1,14 +1,13 @@
-import { Status, START_LOADING, COMPLETE_LOADING } from './constants';
-import { ILoaderState } from './types';
+import {COMPLETE_LOADING, START_LOADING, Status} from "./constants";
+import {ILoaderAction, ILoaderState} from "./types";
 
 const initialState: ILoaderState = {
-	label: null,
 	status: Status.NONE,
 	statusMessage: null
 };
 
-export function reducer(state = initialState, action): ILoaderState {
-	let {type, payload} = action;
+export function reducer(state: ILoaderState = initialState, action:ILoaderAction) {
+	const {type, payload} = action;
 	switch (type) {
 	case START_LOADING:
 		return {...state, status: Status.PROGRESS, ...payload};

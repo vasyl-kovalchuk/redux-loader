@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "jsx": "react",
+    "sourceMap": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "types" : [],
+    "allowJs": true
+  },
+  "compileOnSave": false,
+  "filesGlob": [
+    "./modules/**/*.tsx",
+    "./modules/**/*.ts",
+    "./typings/tsd.d.ts",
+    "!./node_modules/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+
+}
